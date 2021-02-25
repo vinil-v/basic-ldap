@@ -28,6 +28,7 @@ Re-enter new password:<br />
 specify the password generated above for "olcRootPW" section <br />
 
 [root@ldapserver ~]# vi chrootpw.ldif<br />
+
 [root@ldapserver ~]# cat chrootpw.ldif<br />
 dn: olcDatabase={0}config,cn=config<br />
 changetype: modify<br />
@@ -59,3 +60,57 @@ SASL/EXTERNAL authentication started<br />
 SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth<br />
 SASL SSF: 0<br />
 adding new entry "cn=inetorgperson,cn=schema,cn=config"<br />
+
+**Set your domain name on LDAP DB.**<br />
+[root@ldapserver ~]# slappasswd<br />
+New password:<br />
+Re-enter new password:<br />
+**{SSHA}E1rizZbX2PijOZrh0JYb0E8VwZF+jshy<br />**
+
+[root@ldapserver ~]# vi chdomain.ldif<br />
+
+[root@ldapserver ~]# cat chdomain.ldif<br />
+dn: olcDatabase={1}monitor,cn=config<br />
+changetype: modify<br />
+replace: olcAccess<br />
+olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth"<br />
+  read by dn.base="cn=Manager,dc=vinil,dc=com" read by * none<br />
+
+dn: olcDatabase={2}hdb,cn=config<br />
+changetype: modify<br />
+replace: olcSuffix<br />
+olcSuffix: dc=vinil,dc=com<br />
+
+dn: olcDatabase={2}hdb,cn=config<br />
+changetype: modify<br />
+replace: olcRootDN<br />
+olcRootDN: cn=Manager,dc=vinil,dc=com<br />
+
+dn: olcDatabase={2}hdb,cn=config<br />
+changetype: modify<br />
+add: olcRootPW<br />
+olcRootPW: **{SSHA}E1rizZbX2PijOZrh0JYb0E8VwZF+jshy<br />**
+
+dn: olcDatabase={2}hdb,cn=config<br />
+changetype: modify<br />
+add: olcAccess<br />
+olcAccess: {0}to attrs=userPassword,shadowLastChange by<br />
+  dn="cn=Manager,dc=vinil,dc=com" write by anonymous auth by self write by * none<br />
+olcAccess: {1}to dn.base="" by * read<br />
+olcAccess: {2}to * by dn="cn=Manager,dc=vinil,dc=com" write by * read<br />
+
+[root@ldapserver ~]# ldapmodify -Y EXTERNAL -H ldapi:/// -f chdomain.ldif<br />
+SASL/EXTERNAL authentication started<br />
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth<br />
+SASL SSF: 0<br />
+modifying entry "olcDatabase={1}monitor,cn=config"<br />
+
+modifying entry "olcDatabase={2}hdb,cn=config"<br />
+
+modifying entry "olcDatabase={2}hdb,cn=config"<br />
+
+modifying entry "olcDatabase={2}hdb,cn=config"<br />
+
+modifying entry "olcDatabase={2}hdb,cn=config"<br />
+
+
