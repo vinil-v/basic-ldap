@@ -146,3 +146,15 @@ adding new entry "cn=Manager,dc=vinil,dc=com"<br />
 adding new entry "ou=People,dc=vinil,dc=com"<br />
 
 adding new entry "ou=Group,dc=vinil,dc=com"<br />
+
+**Checking the ldap server setup:<br />**
+[root@ldapserver ~]# ss -tlpnu | grep slapd<br />
+tcp    LISTEN     0      128       *:389                   *:*                   users:(("slapd",pid=1731,fd=8))<br />
+tcp    LISTEN     0      128    [::]:389                [::]:*                   users:(("slapd",pid=1731,fd=9))<br />
+
+**verifying the config file <br />**
+[root@ldapserver ~]# slaptest<br />
+config file testing succeeded<br />
+
+[root@ldapserver ~]# ldapsearch -x -b "dc=vinil,dc=com" -H ldap://ldapserver.vinil.com
+
