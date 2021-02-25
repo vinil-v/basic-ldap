@@ -1,6 +1,6 @@
 # How To Install and Configure a Basic LDAP Server
 
-The following parameters are used to configure the ldap server <br />
+The following parameters are used to configure the ldap server. <br />
 
 **Domain**:	vinil.com<br />
 **Domain DN**:	dc=vinil,dc=com<br />
@@ -12,6 +12,7 @@ The following parameters are used to configure the ldap server <br />
 [root@ldapserver ~]# yum -y install openldap-servers openldap-clients<br />
 
 **copying the sample config file and starting the service<br />**
+
 [root@ldapserver ~]# cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG<br />
 [root@ldapserver ~]# chown ldap. /var/lib/ldap/DB_CONFIG<br />
 [root@ldapserver ~]# systemctl start slapd<br />
@@ -28,8 +29,6 @@ Re-enter new password:<br />
 specify the password generated above for "olcRootPW" section <br />
 
 [root@ldapserver ~]# vi chrootpw.ldif<br />
-
-[root@ldapserver ~]# cat chrootpw.ldif<br />
 dn: olcDatabase={0}config,cn=config<br />
 changetype: modify<br />
 add: olcRootPW<br />
@@ -62,14 +61,13 @@ SASL SSF: 0<br />
 adding new entry "cn=inetorgperson,cn=schema,cn=config"<br />
 
 **Set your domain name on LDAP DB.**<br />
+
 [root@ldapserver ~]# slappasswd<br />
 New password:<br />
 Re-enter new password:<br />
 **{SSHA}E1rizZbX2PijOZrh0JYb0E8VwZF+jshy<br />**
 
 [root@ldapserver ~]# vi chdomain.ldif<br />
-
-[root@ldapserver ~]# cat chdomain.ldif<br />
 dn: olcDatabase={1}monitor,cn=config<br />
 changetype: modify<br />
 replace: olcAccess<br />
@@ -115,8 +113,6 @@ modifying entry "olcDatabase={2}hdb,cn=config"<br />
 
 
 [root@ldapserver ~]# vi basedomain.ldif<br />
-
-[root@ldapserver ~]# cat basedomain.ldif<br />
 dn: dc=vinil,dc=com<br />
 objectClass: top<br />
 objectClass: dcObject<br />
@@ -148,13 +144,83 @@ adding new entry "ou=People,dc=vinil,dc=com"<br />
 adding new entry "ou=Group,dc=vinil,dc=com"<br />
 
 **Checking the ldap server setup:<br />**
+
 [root@ldapserver ~]# ss -tlpnu | grep slapd<br />
 tcp    LISTEN     0      128       *:389                   *:*                   users:(("slapd",pid=1731,fd=8))<br />
 tcp    LISTEN     0      128    [::]:389                [::]:*                   users:(("slapd",pid=1731,fd=9))<br />
 
 **verifying the config file <br />**
+
 [root@ldapserver ~]# slaptest<br />
 config file testing succeeded<br />
 
+**running ldapsearch<br />**
+
 [root@ldapserver ~]# ldapsearch -x -b "dc=vinil,dc=com" -H ldap://ldapserver.vinil.com
+
+**Adding some ldap users for testing<br />**
+run useradd to add some users in ldapserver and set the password.<br />
+
+[root@ldapserver ~]# useradd user1<br />
+[root@ldapserver ~]# useradd user2<br />
+[root@ldapserver ~]# useradd user3<br />
+[root@ldapserver ~]# useradd user4<br />
+[root@ldapserver ~]# useradd user5<br />
+[root@ldapserver ~]# echo "vinilv123" | passwd --stdin user1<br />
+Changing password for user user1.<br />
+passwd: all authentication tokens updated successfully.<br />
+[root@ldapserver ~]# echo "vinilv123" | passwd --stdin user2<br />
+Changing password for user user2.<br />
+passwd: all authentication tokens updated successfully.<br />
+[root@ldapserver ~]# echo "vinilv123" | passwd --stdin user3<br />
+Changing password for user user3.<br />
+passwd: all authentication tokens updated successfully.<br />
+[root@ldapserver ~]# echo "vinilv123" | passwd --stdin user4<br />
+Changing password for user user4.<br />
+passwd: all authentication tokens updated successfully.<br />
+[root@ldapserver ~]# echo "vinilv123" | passwd --stdin user5<br />
+Changing password for user user5.<br />
+passwd: all authentication tokens updated successfully.<br />
+
+**run ldapuser.sh script to create ldif file for adding the users to ldap server.<br />**
+[root@ldapserver ~]# sh ldapuser.sh<br />
+
+[root@ldapserver ~]# ls -ltr<br />
+-rw-r--r--  1 root root 4025 Feb 22 11:20 ldapuser.ldif<br />
+
+**Add the users to ldap server using ldapadd<br />**
+
+[root@ldapserver ~]# ldapadd -x -D cn=Manager,dc=vinil,dc=com -W -f ldapuser.ldif<br />
+Enter LDAP Password:<br />
+adding new entry "uid=packer,ou=People,dc=vinil,dc=com"<br />
+
+adding new entry "uid=vinil,ou=People,dc=vinil,dc=com"<br />
+
+adding new entry "uid=user1,ou=People,dc=vinil,dc=com"<br />
+
+adding new entry "uid=user2,ou=People,dc=vinil,dc=com"<br />
+
+adding new entry "uid=user3,ou=People,dc=vinil,dc=com"<br />
+
+adding new entry "uid=user4,ou=People,dc=vinil,dc=com"<br />
+
+adding new entry "uid=user5,ou=People,dc=vinil,dc=com"<br />
+
+adding new entry "cn=packer,ou=Group,dc=vinil,dc=com"<br />
+
+adding new entry "cn=vinil,ou=Group,dc=vinil,dc=com"<br />
+
+adding new entry "cn=user1,ou=Group,dc=vinil,dc=com"<br />
+
+adding new entry "cn=user2,ou=Group,dc=vinil,dc=com"<br />
+
+adding new entry "cn=user3,ou=Group,dc=vinil,dc=com"<br />
+
+adding new entry "cn=user4,ou=Group,dc=vinil,dc=com"<br />
+
+adding new entry "cn=user5,ou=Group,dc=vinil,dc=com"<br />
+
+
+
+
 
