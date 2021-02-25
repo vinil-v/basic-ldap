@@ -5,7 +5,7 @@ Domain DN:	dc=vinil,dc=com<br />
 LDAP Server:	ldapserver.vinil.com<br />
 OS Version : Red Hat Enterprise Linux Server release 7.9 (Maipo)<br />
 
-##Installing packages required to configure Ldap server:<br />
+**Installing packages required to configure Ldap server:<br />**
 
-[root@ldapserver ~]# yum -y install openldap-servers openldap-clients<br />
+# yum -y install openldap-servers openldap-clients<br />
 
