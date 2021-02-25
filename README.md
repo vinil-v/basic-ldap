@@ -9,13 +9,13 @@ The following parameters are used to configure the ldap server <br />
 
 **Installing packages required to configure Ldap server:<br />**
 
-yum -y install openldap-servers openldap-clients<br />
+$yum -y install openldap-servers openldap-clients<br />
 
-
-cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG<br />
-chown ldap. /var/lib/ldap/DB_CONFIG<br />
-systemctl start slapd<br />
-systemctl enable slapd<br />
+**copying the sample config file and starting the service<br />**
+$cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG<br />
+$chown ldap. /var/lib/ldap/DB_CONFIG<br />
+$systemctl start slapd<br />
+$systemctl enable slapd<br />
 
 
 **Set OpenLDAP admin password.<br />**
