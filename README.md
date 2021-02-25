@@ -114,3 +114,35 @@ modifying entry "olcDatabase={2}hdb,cn=config"<br />
 modifying entry "olcDatabase={2}hdb,cn=config"<br />
 
 
+[root@ldapserver ~]# vi basedomain.ldif<br />
+
+[root@ldapserver ~]# cat basedomain.ldif<br />
+dn: dc=vinil,dc=com<br />
+objectClass: top<br />
+objectClass: dcObject<br />
+objectclass: organization<br />
+o: Vinil Com<br />
+dc: vinil<br />
+
+dn: cn=Manager,dc=vinil,dc=com<br />
+objectClass: organizationalRole<br />
+cn: Manager<br />
+description: Directory Manager<br />
+
+dn: ou=People,dc=vinil,dc=com<br />
+objectClass: organizationalUnit<br />
+ou: People<br />
+
+dn: ou=Group,dc=vinil,dc=com<br />
+objectClass: organizationalUnit<br />
+ou: Group<br />
+
+[root@ldapserver ~]# ldapadd -x -D cn=Manager,dc=vinil,dc=com -W -f basedomain.ldif<br />
+Enter LDAP Password:<br />
+adding new entry "dc=vinil,dc=com"<br />
+
+adding new entry "cn=Manager,dc=vinil,dc=com"<br />
+
+adding new entry "ou=People,dc=vinil,dc=com"<br />
+
+adding new entry "ou=Group,dc=vinil,dc=com"<br />
