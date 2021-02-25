@@ -23,17 +23,39 @@ $ systemctl enable slapd<br />
 $ slappasswd<br />
 New password:<br />
 Re-enter new password:<br />
-{SSHA}lQiyFGZXw4Uk3F2Bic74EbShG3Fl6C57<br />
+**{SSHA}lQiyFGZXw4Uk3F2Bic74EbShG3Fl6C57<br />**
+
+specify the password generated above for "olcRootPW" section <br />
 
 $ vi chrootpw.ldif<br />
 $ cat chrootpw.ldif<br />
 dn: olcDatabase={0}config,cn=config<br />
 changetype: modify<br />
 add: olcRootPW<br />
-olcRootPW: {SSHA}lQiyFGZXw4Uk3F2Bic74EbShG3Fl6C57<br />
+olcRootPW: **{SSHA}lQiyFGZXw4Uk3F2Bic74EbShG3Fl6C57<br />**
 
 $ ldapadd -Y EXTERNAL -H ldapi:/// -f chrootpw.ldif<br />
 SASL/EXTERNAL authentication started<br />
 SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth<br />
 SASL SSF: 0<br />
 modifying entry "olcDatabase={0}config,cn=config"<br />
+
+**Import basic schemas<br />**
+
+[root@ldapserver ~]# ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/cosine.ldif<br />
+SASL/EXTERNAL authentication started<br />
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth<br />
+SASL SSF: 0<br />
+adding new entry "cn=cosine,cn=schema,cn=config"<br />
+
+[root@ldapserver ~]# ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/nis.ldif<br />
+SASL/EXTERNAL authentication started<br />
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth<br />
+SASL SSF: 0<br />
+adding new entry "cn=nis,cn=schema,cn=config"<br />
+
+[root@ldapserver ~]# ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/inetorgperson.ldif<br />
+SASL/EXTERNAL authentication started<br />
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth<br />
+SASL SSF: 0<br />
+adding new entry "cn=inetorgperson,cn=schema,cn=config"<br />
