@@ -162,65 +162,37 @@ config file testing succeeded<br />
 run useradd to add some users in ldapserver and set the password.<br />
 
 [root@ldapserver ~]# useradd user1<br />
-[root@ldapserver ~]# useradd user2<br />
-[root@ldapserver ~]# useradd user3<br />
-[root@ldapserver ~]# useradd user4<br />
-[root@ldapserver ~]# useradd user5<br />
 [root@ldapserver ~]# echo "vinilv123" | passwd --stdin user1<br />
 Changing password for user user1.<br />
 passwd: all authentication tokens updated successfully.<br />
-[root@ldapserver ~]# echo "vinilv123" | passwd --stdin user2<br />
-Changing password for user user2.<br />
-passwd: all authentication tokens updated successfully.<br />
-[root@ldapserver ~]# echo "vinilv123" | passwd --stdin user3<br />
-Changing password for user user3.<br />
-passwd: all authentication tokens updated successfully.<br />
-[root@ldapserver ~]# echo "vinilv123" | passwd --stdin user4<br />
-Changing password for user user4.<br />
-passwd: all authentication tokens updated successfully.<br />
-[root@ldapserver ~]# echo "vinilv123" | passwd --stdin user5<br />
-Changing password for user user5.<br />
-passwd: all authentication tokens updated successfully.<br />
 
-**run ldapuser.sh script to create ldif file for adding the users to ldap server.<br />**
-[root@ldapserver ~]# sh ldapuser.sh<br />
-
-[root@ldapserver ~]# ls -ltr<br />
--rw-r--r--  1 root root 4025 Feb 22 11:20 ldapuser.ldif<br />
+**create ldapuser.ldif file**
+dn: uid=user1,ou=People,dc=vinil,dc=com
+uid: user1
+cn: user1
+sn: user1
+mail: user1@vinil.com
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: $6$ZCeX8kYx$0GIARL9NBsuQcJLTi2jNOOzsaDJbey.4.ElK06bX15QBQxPWeGZi8sTwOFEtl2kbA4Q3fnYXhm7WkZtvww9ip1
+shadowLastChange: 17449
+shadowMin: 0
+shadowMax: 99999
+shadowWarning: 7
+loginShell: /bin/bash
+uidNumber: 1001
+gidNumber: 1001
+homeDirectory: /home/user1
 
 **Add the users to ldap server using ldapadd<br />**
 
 [root@ldapserver ~]# ldapadd -x -D cn=Manager,dc=vinil,dc=com -W -f ldapuser.ldif<br />
 Enter LDAP Password:<br />
-adding new entry "uid=packer,ou=People,dc=vinil,dc=com"<br />
-
-adding new entry "uid=vinil,ou=People,dc=vinil,dc=com"<br />
-
 adding new entry "uid=user1,ou=People,dc=vinil,dc=com"<br />
-
-adding new entry "uid=user2,ou=People,dc=vinil,dc=com"<br />
-
-adding new entry "uid=user3,ou=People,dc=vinil,dc=com"<br />
-
-adding new entry "uid=user4,ou=People,dc=vinil,dc=com"<br />
-
-adding new entry "uid=user5,ou=People,dc=vinil,dc=com"<br />
-
-adding new entry "cn=packer,ou=Group,dc=vinil,dc=com"<br />
-
-adding new entry "cn=vinil,ou=Group,dc=vinil,dc=com"<br />
-
-adding new entry "cn=user1,ou=Group,dc=vinil,dc=com"<br />
-
-adding new entry "cn=user2,ou=Group,dc=vinil,dc=com"<br />
-
-adding new entry "cn=user3,ou=Group,dc=vinil,dc=com"<br />
-
-adding new entry "cn=user4,ou=Group,dc=vinil,dc=com"<br />
-
-adding new entry "cn=user5,ou=Group,dc=vinil,dc=com"<br />
-
-
-
-
+**set the password for user1**
+ldappasswd -s user1@123 -W -D "cn=Manager,dc=vinil,dc=com" -x "uid=user1,ou=People,dc=vinil,dc=com"
 
